@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+    <style name="dialog" parent="android:Theme.Dialog">
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <!-- 表示当前对话框弹出后，他后面视图(一般指Activity的视图)的透明度 0 ：完全透明 1:完全不透明，黑色 -->
+        <item name="android:backgroundDimAmount">0.5</item>
+    </style>
+
+</resources>
