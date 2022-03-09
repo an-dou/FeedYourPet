@@ -9,9 +9,13 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,10 +25,15 @@ import android.widget.Scroller;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.BufferedReader;
+import java.io.DataInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintStream;
+import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 
@@ -32,23 +41,28 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
 
+    //连接ESP8266的IP和端口号
     private final String IP="192.168.4.1";
     private final int Port=8080;
 
     private Socket mSocket;
     private ConnectThread mConnectThread;
     private PrintStream out;
+//    private DataInputStream in;
+    private BufferedReader br;
+    private Handler handler;
+    private char[] receice;
+    private String receiceString;
 
     private Button buttonConnect;
     private Button buttonOut;
     private Button buttonAdd;
     private TextView tViewConnect;
     private SlideRecyclerView recyclerView;
-//    RecyclerView recyclerView;
 
-    Data data;
-    List<Alarm> alarms;
-    AlarmAdapter alarmAdapter;
+    private Data data;
+    private List<Alarm> alarms;
+    private AlarmAdapter alarmAdapter;
 
     class CallBack extends ItemTouchHelper.Callback{
         @Override
@@ -91,6 +105,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+    @SuppressLint("HandlerLeak")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -107,6 +122,18 @@ public class MainActivity extends AppCompatActivity {
 
         data=(Data) getApplicationContext();
         alarms=data.getAlarms();
+
+        handler = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                switch (msg.what) {
+                    case 1:
+//                        tv_content.setText("WiFi模块发送的：" + msg.obj);
+                        Log.d(TAG, "handleMessage: "+msg.obj);
+//                        Toast.makeText(MainActivity.this, "接收到信息: "+msg.obj, Toast.LENGTH_LONG).show();
+                }
+            }
+        };
 
 //        alarms=new ArrayList<>();
         /*if(alarms.size()<data.getMaxAlarmNum()) {
@@ -162,7 +189,46 @@ public class MainActivity extends AppCompatActivity {
         buttonOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(out!=null&&alarms.size()>0){
+                    StringBuilder sb0 = new StringBuilder();
+                    StringBuilder sb1 = new StringBuilder();
+                    int counter=0;
+                    for (int a = 0; a < alarms.size(); a++) {
+                        if(alarms.get(a).getState()){
+                            sb0.append(alarms.get(a).getHour()*60+alarms.get(a).getMinute() + ",");
+                            sb1.append(alarms.get(a).getWeight() + ",");
+                            counter++;
+                        }
+                    }
+                    // Android 4.0 之后不能在主线程中请求HTTP请求
+                    int finalCounter = counter;
+                    new Thread(new Runnable(){
+                        @Override
+                        public void run() {
+                            if(out!=null){
+                                if(finalCounter >0) {
+                                    out.print(sb0.toString());
+                                    out.print(sb1.toString());
+                                    out.flush();
+                                }
+                                else {
+                                    out.print(-1);
+                                    out.flush();
+                                }
+                            }
+                        }
+                    }).start();
+                }
+                else if(alarms.size()==0){
+                    new Thread(new Runnable(){
+                        @Override
+                        public void run() {
+                            out.print(-1);
+                            out.flush();
+                        }
+                    }).start();
 
+                }
             }
         });
         buttonAdd.setOnClickListener(new View.OnClickListener() {
@@ -194,6 +260,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+
     private class ConnectThread extends Thread {
         private String ip;
         private int port;
@@ -215,7 +282,17 @@ public class MainActivity extends AppCompatActivity {
                         tViewConnect.setText("已连接");
                     }
                 });
-//                new HeartBeatThread().start();
+                //new HeartBeatThread().start();
+
+                //app发送数据：同步手机和单片机的时间
+                Calendar cal=Calendar.getInstance();
+                String time=cal.get(Calendar.YEAR)+","+(cal.get(Calendar.MONTH)+1)+","
+                        +cal.get(Calendar.DATE)+","+(cal.get(Calendar.HOUR)+12)+","
+                        +cal.get(Calendar.MINUTE)+","+cal.get(Calendar.SECOND)+",";
+                out.print(time);
+                out.flush();
+                Log.d(TAG, "run: " +time);
+
             } catch (IOException e) {
                 e.printStackTrace();
                 runOnUiThread(new Runnable() {
@@ -228,6 +305,47 @@ public class MainActivity extends AppCompatActivity {
                 });
             }
         }
+    }
+
+    private void GetTCPstring(){
+        new Thread(){
+            public void run(){
+                try{
+                    receice=new char[10];
+                    br=new BufferedReader(new InputStreamReader(mSocket.getInputStream()));
+                    while (true){
+                        if(br.ready()){
+                            br.read(receice,0,10);
+//                            receiceString=String.valueOf(receice);
+
+
+                            Message message = new Message();
+                            message.what = 1;
+                            message.obj = new String(receice);
+                            handler.sendMessage(message);
+//                            handler.sendMessage(handler.obtainMessage());
+                        }
+                    }
+
+
+                    //app接受数据：
+                   /* while (true) {
+                        Socket mSocket = server.accept();
+
+                        receice = new byte[50];
+                        in.read(receice);
+                        in.close();
+
+                    }*/
+
+
+                }catch(IOException e){
+                    e.printStackTrace();
+                    Toast.makeText(MainActivity.this,"接受数据失败",Toast.LENGTH_LONG).show();
+
+                }
+            }
+        }.start();
     }
 
 /*

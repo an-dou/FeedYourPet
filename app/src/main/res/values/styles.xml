@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <style name="myTheme">
+        <!--设置应用布局时是否考虑系统窗口布局-->
+        <item name="android:fitsSystemWindows">true</item>
+    </style>
 
     <style name="dialog" parent="android:Theme.Dialog">
         <item name="android:windowFrame">@null</item>

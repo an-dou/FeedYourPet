@@ -98,11 +98,11 @@ public class Data extends Application {
         String[] weightArrays = weightString.split(",");
         String[] stateArrays = stateString.split(",");
         alarms = new ArrayList<Alarm>();
-        for (int i = 0; i < hourArrays.length; i++) {
-            alarms.add(new Alarm(Integer.parseInt(hourArrays[i]),
-                    Integer.parseInt(minuteArrays[i]),
-                    Integer.parseInt(weightArrays[i]),
-                    Boolean.parseBoolean(stateArrays[i])));
+        for (int a = 0; a < hourArrays.length; a++) {
+            alarms.add(new Alarm(Integer.parseInt(hourArrays[a]),
+                    Integer.parseInt(minuteArrays[a]),
+                    Integer.parseInt(weightArrays[a]),
+                    Boolean.parseBoolean(stateArrays[a])));
         }
 
     }
@@ -114,11 +114,11 @@ public class Data extends Application {
             StringBuilder sb1 = new StringBuilder();
             StringBuilder sb2 = new StringBuilder();
             StringBuilder sb3 = new StringBuilder();
-            for (int i = 0; i < alarms.size(); i++) {
-                sb0.append(alarms.get(i).getHour() + ",");
-                sb1.append(alarms.get(i).getMinute() + ",");
-                sb2.append(alarms.get(i).getWeight() + ",");
-                sb3.append(alarms.get(i).getState() + ",");
+            for (int a = 0; a < alarms.size(); a++) {
+                sb0.append(alarms.get(a).getHour() + ",");
+                sb1.append(alarms.get(a).getMinute() + ",");
+                sb2.append(alarms.get(a).getWeight() + ",");
+                sb3.append(alarms.get(a).getState() + ",");
             }
             SharedPreferences.Editor editor = sp.edit();
             editor.putString(HOUR_SAVED, sb0.toString());
