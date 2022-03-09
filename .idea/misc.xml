@@ -8,8 +8,11 @@
         <entry key="..\:/FeedYourPet/app/src/main/res/drawable/background2.xml" value="0.14791666666666667" />
         <entry key="..\:/FeedYourPet/app/src/main/res/drawable/background3.xml" value="0.14791666666666667" />
         <entry key="..\:/FeedYourPet/app/src/main/res/drawable/background4.xml" value="0.14791666666666667" />
+        <entry key="..\:/FeedYourPet/app/src/main/res/drawable/divider_inset.xml" value="0.23333333333333334" />
         <entry key="..\:/FeedYourPet/app/src/main/res/drawable/ic_launcher_background.xml" value="0.12135416666666667" />
+        <entry key="..\:/FeedYourPet/app/src/main/res/drawable/shape_line.xml" value="0.23333333333333334" />
         <entry key="..\:/FeedYourPet/app/src/main/res/layout/activity_main.xml" value="0.25" />
+        <entry key="..\:/FeedYourPet/app/src/main/res/layout/alarm_item.xml" value="0.22" />
         <entry key="..\:/FeedYourPet/app/src/main/res/layout/dialog_alarm.xml" value="0.33" />
         <entry key="..\:/FeedYourPet/app/src/main/res/layout/dialog_layout.xml" value="0.25" />
         <entry key="..\:/FeedYourPet/app/src/main/res/layout/fragment_alarm.xml" value="0.13177083333333334" />

@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">FeedYourPet</string>
 
+    <string name="alarm_list_title">喂食计划</string>
+
     <string name="alarm_title">定时器</string>
     <string name="alarm_cancel">取消</string>
     <string name="alarm_finish">完成</string>

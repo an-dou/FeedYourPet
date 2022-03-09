@@ -48,29 +48,29 @@ public class Data extends Application {
     }
 
     public void changeAlarm(int i,Alarm alarm){
-        alarms.get(i).hour=alarm.hour;
-        alarms.get(i).minute=alarm.minute;
-        alarms.get(i).weight=alarm.weight;
-        alarms.get(i).state=true;
+        alarms.get(i).setHour(alarm.getHour());
+        alarms.get(i).setMinute(alarm.getMinute());
+        alarms.get(i).setWeight(alarm.getWeight());
+        alarms.get(i).setState(true);
     }
 
     private void AlarmSort(){
         int a=alarms.size()-1;
         int temp=a;
         for(int b=0;b<alarms.size()-1;b++){
-            if((alarms.get(b).hour*60+alarms.get(b).minute)
-                    > (alarms.get(a).hour*60+alarms.get(a).minute)){
+            if((alarms.get(b).getHour()*60+alarms.get(b).getMinute())
+                    > (alarms.get(a).getHour()*60+alarms.get(a).getMinute())){
                 temp=b;
                 break;
             }
-            else if((alarms.get(b).hour*60+alarms.get(b).minute)
-                    == (alarms.get(a).hour*60+alarms.get(a).minute)){
-                if((alarms.get(b).weight) == (alarms.get(a).weight)) {
+            else if((alarms.get(b).getHour()*60+alarms.get(b).getMinute())
+                    == (alarms.get(a).getHour()*60+alarms.get(a).getMinute())){
+                if((alarms.get(b).getWeight()) == (alarms.get(a).getWeight())) {
                     alarms.remove(a);
-                    alarms.get(b).state=true;
+                    alarms.get(b).setState(true);
                     break;
                 }
-                else if((alarms.get(b).weight) > (alarms.get(a).weight)) {
+                else if((alarms.get(b).getWeight()) > (alarms.get(a).getWeight())) {
                     temp = b;
                     break;
                 }
@@ -112,10 +112,10 @@ public class Data extends Application {
             StringBuilder sb2 = new StringBuilder();
             StringBuilder sb3 = new StringBuilder();
             for (int i = 0; i < alarms.size(); i++) {
-                sb0.append(alarms.get(i).hour + ",");
-                sb1.append(alarms.get(i).minute + ",");
-                sb2.append(alarms.get(i).weight + ",");
-                sb3.append(alarms.get(i).state + ",");
+                sb0.append(alarms.get(i).getHour() + ",");
+                sb1.append(alarms.get(i).getMinute() + ",");
+                sb2.append(alarms.get(i).getWeight() + ",");
+                sb3.append(alarms.get(i).getState() + ",");
             }
             SharedPreferences.Editor editor = sp.edit();
             editor.putString(HOUR_SAVED, sb0.toString());
