@@ -9,12 +9,15 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.DialogInterface;
 import android.graphics.Canvas;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.Scroller;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,18 +32,18 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
 
-    final String IP="192.168.4.1";
-    final int Port=8080;
+    private final String IP="192.168.4.1";
+    private final int Port=8080;
 
-    Socket mSocket;
-    ConnectThread mConnectThread;
-    PrintStream out;
+    private Socket mSocket;
+    private ConnectThread mConnectThread;
+    private PrintStream out;
 
-    Button buttonConnect;
-    Button buttonOut;
-    Button buttonAdd;
-    TextView tViewConnect;
-    SlideRecyclerView recyclerView;
+    private Button buttonConnect;
+    private Button buttonOut;
+    private Button buttonAdd;
+    private TextView tViewConnect;
+    private SlideRecyclerView recyclerView;
 //    RecyclerView recyclerView;
 
     Data data;
@@ -102,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerView=findViewById(R.id.recyclerView);
 
 
-        Data data=(Data) getApplicationContext();
+        data=(Data) getApplicationContext();
         alarms=data.getAlarms();
 
 //        alarms=new ArrayList<>();
@@ -126,7 +129,7 @@ public class MainActivity extends AppCompatActivity {
         // 设置 item 增加和删除时的动画
 //        recyclerView.setItemAnimator(new DefaultItemAnimator());
 
-        alarmAdapter=new AlarmAdapter(this,alarms);
+        alarmAdapter=new AlarmAdapter(this);
 //        slideRecyclerView.setAdapter(alarmAdapter);
 
         recyclerView.setAdapter(alarmAdapter);
@@ -134,12 +137,6 @@ public class MainActivity extends AppCompatActivity {
 
 //        ItemTouchHelper itemTouchHelper=new ItemTouchHelper(new CallBack());
 //        itemTouchHelper.attachToRecyclerView(recyclerView);
-
-        if(alarms.size()>0)
-            Toast.makeText(MainActivity.this,alarms.get(0).getHour()+"",Toast.LENGTH_LONG).show();
-        else
-            Toast.makeText(MainActivity.this,"aaaa",Toast.LENGTH_LONG).show();
-
 
         buttonConnect.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -172,10 +169,17 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 //                alarms=data.getAlarms();
-                if(alarms.size()<10){
+                if(alarms.size()<data.getMaxAlarmNum()){
                     //dialog
                     CustomDialog dialog = new CustomDialog(MainActivity.this);
                     dialog.show();
+                    dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                        @Override
+                        public void onCancel(DialogInterface dialogInterface) {
+//                            alarms=data.getAlarms();
+                            alarmAdapter.notifyDataSetChanged();
+                        }
+                    });
                 }
                 /*if(alarms.size()<data.getMaxAlarmNum()){
                     //dialog
@@ -189,14 +193,6 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Log.d(TAG, "onResume: "+alarms.get(alarms.size()-1).getHour()+ "时"
-                +alarms.get(alarms.size()-1).getMinute()+ "分");
-
-
-    }
 
     private class ConnectThread extends Thread {
         private String ip;

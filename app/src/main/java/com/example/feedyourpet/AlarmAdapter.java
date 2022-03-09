@@ -2,6 +2,7 @@ package com.example.feedyourpet;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,9 +23,13 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.ViewHolder>{
     private Context context;
     private List<Alarm> alarms;
 
-    public AlarmAdapter(Context context, List<Alarm> alarmList) {
+    private Data data;
+
+    public AlarmAdapter(Context context) {
         this.context = context;
-        this.alarms = alarmList;
+
+        this.data=(Data) context.getApplicationContext();
+        this.alarms = data.getAlarms();
 
     }
     @NonNull
@@ -49,14 +54,30 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.ViewHolder>{
             alarmOff(holder,alarm);
         }
 
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                CustomDialog dialog = new CustomDialog(view.getContext(),position);
+                dialog.show();
+                dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                    @Override
+                    public void onCancel(DialogInterface dialogInterface) {
+                        notifyDataSetChanged();
+                    }
+                });
+            }
+        });
+
         holder.imageBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (alarm.getState()){
                     alarmOff(holder,alarm);
+                    data.changeAlarmState(position);
                 }
                 else if (!alarm.getState()){
                     alarmOn(holder,alarm);
+                    data.changeAlarmState(position);
                 }
             }
         });
@@ -65,6 +86,7 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.ViewHolder>{
             @Override
             public void onClick(View view) {
                 remove(holder.getAdapterPosition());
+
             }
         });
 
@@ -75,14 +97,12 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.ViewHolder>{
         holder.time.setTextColor(context.getResources().getColor(R.color.black));
         holder.weight.setTextColor(context.getResources().getColor(R.color.gray_737373));
         holder.unit.setTextColor(context.getResources().getColor(R.color.gray_737373));
-        alarm.setState(true);
     }
     private void alarmOff(@NonNull AlarmAdapter.ViewHolder holder, @NonNull Alarm alarm){
         holder.imageBack.setImageResource(R.mipmap.alarm_off);
         holder.time.setTextColor(context.getResources().getColor(R.color.gray_c5c5c5));
         holder.weight.setTextColor(context.getResources().getColor(R.color.gray_c5c5c5));
         holder.unit.setTextColor(context.getResources().getColor(R.color.gray_c5c5c5));
-        alarm.setState(false);
     }
 //    public OnClickListener onClickListener;
 
@@ -94,7 +114,8 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.ViewHolder>{
 //        void onClick(int position);
 //    }
     public void remove(int adapterPosition) {
-        alarms.remove(adapterPosition);
+        data.removeAlarm(adapterPosition);
+//        alarms.remove(adapterPosition);
         notifyItemRemoved(adapterPosition);
     }
 

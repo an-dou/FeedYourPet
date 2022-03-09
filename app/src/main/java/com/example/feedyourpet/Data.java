@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.SharedPreferences;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -42,16 +43,18 @@ public class Data extends Application {
         return alarms;
     }
 
-    public void delAlarm(int i){
+    public void removeAlarm(int i){
         alarms.remove(i);
         saveAlarm();
     }
 
+    public void changeAlarmState(int i){
+        alarms.get(i).setState(!alarms.get(i).getState());
+        saveAlarm();
+    }
     public void changeAlarm(int i,Alarm alarm){
-        alarms.get(i).setHour(alarm.getHour());
-        alarms.get(i).setMinute(alarm.getMinute());
-        alarms.get(i).setWeight(alarm.getWeight());
-        alarms.get(i).setState(true);
+        alarms.remove(i);
+        addAlarms(alarm);
     }
 
     private void AlarmSort(){

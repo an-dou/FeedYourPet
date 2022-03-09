@@ -3,6 +3,7 @@ package com.example.feedyourpet;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -12,7 +13,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CustomDialog extends Dialog implements View.OnClickListener {
+    private static final String TAG = "CustomDialog";
     Context mContext;
+    Data data;
 
     PickerView pickerHour;
     PickerView pickerMinute;
@@ -21,11 +24,18 @@ public class CustomDialog extends Dialog implements View.OnClickListener {
     Button butCancel;
     Button butFinish;
 
-    Data data;
+    int position;
 
     public CustomDialog(Context context) {
         super(context, R.style.dialog);
         mContext = context;
+        position=-1;
+    }
+
+    public CustomDialog(Context context,int position) {
+        super(context, R.style.dialog);
+        mContext = context;
+        this.position=position;
     }
 
     @Override
@@ -57,13 +67,19 @@ public class CustomDialog extends Dialog implements View.OnClickListener {
             minuteList.add(i < 10 ? "0" + i : i + "");
             i+=10;
         }
-        for (int i = 50; i <= 500; ) {
+        for (int i = 50; i <= 300; ) {
             weightList.add(i + "");
             i+=50;
         }
         pickerHour.setData(hourList);
         pickerMinute.setData(minuteList);
         pickerWeight.setData(weightList);
+        if(position>=0){
+            Alarm alarm=data.getAlarms().get(position);
+            pickerHour.setCurrentSelected(alarm.getHour());
+            pickerMinute.setCurrentSelected(alarm.getMinute()/10);
+            pickerWeight.setCurrentSelected(alarm.getWeight()/50-1);
+        }
         /*pickerHour.setOnSelectListener(new PickerView.onSelectListener() {
 
             @Override
@@ -82,10 +98,17 @@ public class CustomDialog extends Dialog implements View.OnClickListener {
                 this.dismiss();
                 break;
             case R.id.button_finish:
-                data.addAlarms(new Alarm(Integer.parseInt(pickerHour.getCurrentSelected()),
-                        Integer.parseInt(pickerMinute.getCurrentSelected()),
-                        Integer.parseInt(pickerWeight.getCurrentSelected()), true));
-                this.dismiss();
+                if(position<0) {
+                    data.addAlarms(new Alarm(Integer.parseInt(pickerHour.getCurrentSelected()),
+                            Integer.parseInt(pickerMinute.getCurrentSelected()),
+                            Integer.parseInt(pickerWeight.getCurrentSelected()), true));
+                }
+                else{
+                    data.changeAlarm(position,new Alarm(Integer.parseInt(pickerHour.getCurrentSelected()),
+                            Integer.parseInt(pickerMinute.getCurrentSelected()),
+                            Integer.parseInt(pickerWeight.getCurrentSelected()), true));
+                }
+                this.cancel();
                 break;
             default:
                 break;
