@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -44,15 +45,24 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.ViewHolder>{
     @Override
     public void onBindViewHolder(@NonNull AlarmAdapter.ViewHolder holder, @SuppressLint("RecyclerView") int position) {
         Alarm alarm = alarms.get(position);
-        holder.time.setText((alarm.getHour() < 10 ? "0" + alarm.getHour() : alarm.getHour())
-                + ":" + (alarm.getMinute() < 10 ? "0" + alarm.getMinute() : alarm.getMinute()));
-        holder.weight.setText(alarm.getWeight()+"");
-        if (alarm.getState()){
-            alarmOn(holder,alarm);
+        if(position<alarms.size()-2){
+            holder.time.setText((alarm.getHour() < 10 ? "0" + alarm.getHour() : alarm.getHour())
+                    + ":" + (alarm.getMinute() < 10 ? "0" + alarm.getMinute() : alarm.getMinute()));
+            holder.weight.setText(alarm.getWeight()+"");
+            if (alarm.getState()){
+                alarmOn(holder,alarm);
+            }
+            else if (!alarm.getState()){
+                alarmOff(holder,alarm);
+            }
+            holder.constrain.setVisibility(View.VISIBLE);
         }
-        else if (!alarm.getState()){
-            alarmOff(holder,alarm);
+        else {
+            holder.constrain.setVisibility(View.GONE);
+            holder.imageBack.setClickable(false);
+            holder.imageSwitch.setClickable(false);
         }
+
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -104,18 +114,9 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.ViewHolder>{
         holder.weight.setTextColor(context.getResources().getColor(R.color.gray_c5c5c5));
         holder.unit.setTextColor(context.getResources().getColor(R.color.gray_c5c5c5));
     }
-//    public OnClickListener onClickListener;
 
-//    public void setOnClickListener(OnClickListener onClickListener) {
-//        this.onClickListener = onClickListener;
-//    }
-
-//    public interface OnClickListener{
-//        void onClick(int position);
-//    }
     public void remove(int adapterPosition) {
         data.removeAlarm(adapterPosition);
-//        alarms.remove(adapterPosition);
         notifyItemRemoved(adapterPosition);
     }
 
@@ -125,6 +126,7 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.ViewHolder>{
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
+        View constrain;
         TextView time,weight,unit;
         ImageView imageBack,imageSwitch;
         Button buttonDelete;
@@ -136,8 +138,8 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.ViewHolder>{
             imageBack=itemView.findViewById(R.id.image_alarm_back);
             imageSwitch=itemView.findViewById(R.id.image_alarm_switch);
             buttonDelete=itemView.findViewById(R.id.button_delete_alarm);
+
+            constrain=itemView.findViewById(R.id.alarm_item_all);
         }
     }
-
-
 }

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="120dp"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <TextView
+        android:id="@+id/now_num_item"
+        android:layout_width="20dp"
+        android:layout_height="match_parent"
+        android:gravity="left|center_vertical"
+        android:textSize="16sp"
+        tools:text="6."/>
+
+    <TextView
+        android:id="@+id/now_time_item"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_toRightOf="@+id/now_num_item"
+        android:gravity="center"
+        android:textSize="16sp"
+        tools:text="19:30" />
+
+    <TextView
+        android:id="@+id/now_symbol"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_toLeftOf="@id/now_weight_item"
+        android:gravity="center"
+        android:text="~"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/now_weight_item"
+        android:layout_width="30dp"
+        android:layout_height="match_parent"
+        android:layout_toLeftOf="@id/now_weight_unit"
+        android:gravity="center"
+        android:textSize="16sp"
+        tools:text="10" />
+
+    <TextView
+        android:id="@+id/now_weight_unit"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentEnd="true"
+        android:gravity="center"
+        android:text="@string/unit_weight"
+        android:textSize="14sp" />
+
+</RelativeLayout>

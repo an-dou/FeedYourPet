@@ -1,7 +1,10 @@
 <resources>
-    <string name="app_name">FeedYourPet</string>
+    <string name="app_name">宠物喂食器</string>
+    <string name="title_layout_title">宠物喂食器：</string>
 
     <string name="alarm_list_title">喂食计划</string>
+    <string name="alarm_send">发送</string>
+    <string name="alarm_add">+</string>
 
     <string name="alarm_title">定时器</string>
     <string name="alarm_cancel">取消</string>
@@ -10,6 +13,6 @@
     <string name="unit_hour">时</string>
     <string name="unit_minute">分</string>
     <string name="unit_weight">克</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="now_no_alarm">暂无</string>
 </resources>

@@ -63,13 +63,17 @@ public class CustomDialog extends Dialog implements View.OnClickListener {
         for (int i = 0; i < 24; i++) {
             hourList.add(i < 10 ? "0" + i : i + "");
         }
+//        for (int i = 0; i < 60; ) {
+//            minuteList.add(i < 10 ? "0" + i : i + "");
+//            i+=5;
+//        }
         for (int i = 0; i < 60; ) {
             minuteList.add(i < 10 ? "0" + i : i + "");
             i+=10;
         }
-        for (int i = 50; i <= 300; ) {
+        for (int i = 10; i <= 50; ) {
             weightList.add(i + "");
-            i+=50;
+            i+=5;
         }
         pickerHour.setData(hourList);
         pickerMinute.setData(minuteList);
@@ -77,14 +81,14 @@ public class CustomDialog extends Dialog implements View.OnClickListener {
         if(position>=0){
             Alarm alarm=data.getAlarms().get(position);
             pickerHour.setCurrentSelected(alarm.getHour());
+//            pickerMinute.setCurrentSelected(alarm.getMinute()/5);
             pickerMinute.setCurrentSelected(alarm.getMinute()/10);
-            pickerWeight.setCurrentSelected(alarm.getWeight()/50-1);
+            pickerWeight.setCurrentSelected(alarm.getWeight()/5-2);
         }
         /*pickerHour.setOnSelectListener(new PickerView.onSelectListener() {
 
             @Override
-            public void onSelect(String text)
-            {
+            public void onSelect(String text){
                 Toast.makeText(getContext(), "选择了 " + text + " 时",
                         Toast.LENGTH_SHORT).show();
             }
@@ -108,6 +112,7 @@ public class CustomDialog extends Dialog implements View.OnClickListener {
                             Integer.parseInt(pickerMinute.getCurrentSelected()),
                             Integer.parseInt(pickerWeight.getCurrentSelected()), true));
                 }
+                data.setState_on_count(true);
                 this.cancel();
                 break;
             default:
